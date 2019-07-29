@@ -1,0 +1,35 @@
+### Code to generate the first plot of the assignment
+library(lubridate)
+# Downlooad the raw data
+fileUrl <- "https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(fileUrl, destfile = "exdata_data_household_power_consumption.zip")
+
+#unzip the raw data folder
+unzip("../exdata_data_household_power_consumption.zip")
+
+housePower <- read.table("household_power_consumption.txt", sep = ";", 
+                         header = TRUE, 
+                         stringsAsFactors = FALSE)
+
+febHP <- subset(housePower, Date %in% c("2/1/2007","2/2/2007")) 
+
+febHP$NewTime <- as.POSIXct(paste0(febHP$Date," ",febHP$Time),
+                            format = "%m/%d/%Y %H:%M:%S")
+
+febHP$day <- wday(febHP$NewTime, label = TRUE)
+
+png("plot3.png", height = 480, width = 480)
+plot(x = febHP$NewTime, y = as.numeric(febHP$Sub_metering_3), 
+     type = "n", 
+     xlab = "", 
+     ylab = "Energy sub metering",
+     ylim = c(0,40))
+lines(x = febHP$NewTime, y = as.numeric(febHP$Sub_metering_1))
+lines(x = febHP$NewTime, y = as.numeric(febHP$Sub_metering_2), col="red")
+lines(x= febHP$NewTime, y = as.numeric(febHP$Sub_metering_3), col="blue")
+
+legend("topright", 
+       lty=1,
+       col = c("black","red","blue"), 
+       legend= c("Sub_metering_1","Sub_metering_2","Sub_metering_3"))
+dev.off()
