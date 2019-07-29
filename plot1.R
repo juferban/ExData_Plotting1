@@ -9,11 +9,18 @@ unzip("../exdata_data_household_power_consumption.zip")
 
 housePower <- read.table("household_power_consumption.txt", sep = ";", 
                          header = TRUE, 
+                         na.strings = "?",
                          stringsAsFactors = FALSE)
 
-febHP <- subset(housePower, Date %in% c("1/2/2007","2/2/2007")) 
+housePower$NewTime <- dmy_hms(paste0(housePower$Date," ",housePower$Time))
+housePower$Date <- dmy(housePower$Date) 
+
+febHP <- subset(housePower, Date == "2007-02-01" | Date == "2007-02-02")
+
+febHP$day <- wday(febHP$NewTime, label = TRUE)
 
 png("plot1.png", height = 480, width = 480)
+
 hist(as.numeric(febHP$Global_active_power), 
      col = "red",
      main = "Global Active Power",
