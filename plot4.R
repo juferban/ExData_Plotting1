@@ -17,3 +17,43 @@ febHP$NewTime <- as.POSIXct(paste0(febHP$Date," ",febHP$Time),
                             format = "%m/%d/%Y %H:%M:%S")
 
 febHP$day <- wday(febHP$NewTime, label = TRUE)
+
+png("plot4.png", height = 480, width = 480)
+
+par(mfrow=c(2,2))
+#plot1
+plot(as.numeric(febHP$Global_active_power) ~ febHP$NewTime, 
+     type = "l", 
+     xlab = "", 
+     ylab = "Global Active Power")
+
+#plot2
+plot(as.numeric(febHP$Voltage) ~ febHP$NewTime, 
+     type = "l", 
+     xlab = "datetime", 
+     ylab = "Voltage")
+
+#plot3
+plot(x = febHP$NewTime, y = as.numeric(febHP$Sub_metering_3), 
+     type = "n", 
+     xlab = "", 
+     ylab = "Energy sub metering",
+     ylim = c(0,40))
+lines(x = febHP$NewTime, y = as.numeric(febHP$Sub_metering_1))
+lines(x = febHP$NewTime, y = as.numeric(febHP$Sub_metering_2), col="red")
+lines(x= febHP$NewTime, y = as.numeric(febHP$Sub_metering_3), col="blue")
+
+legend("topright", 
+       lty=1,
+       col = c("black","red","blue"), 
+       legend= c("Sub_metering_1","Sub_metering_2","Sub_metering_3"),
+       bty = "n")
+
+#plot4
+plot(as.numeric(febHP$Global_reactive_power) ~ febHP$NewTime, 
+     type = "l", 
+     xlab = "", 
+     ylab = "Global_reactive_power")
+
+
+dev.off()
